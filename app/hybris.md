@@ -82,10 +82,5 @@ Make the script executable
 chmod +x /etc/init.d/hybris
 ```
 
-//TODO config
-//test
-
-
-----------
 
 
