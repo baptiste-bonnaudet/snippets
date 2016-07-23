@@ -7,8 +7,13 @@ This document will go through the installation of keepalived for seting up a flo
 
 ####What keepalived is
 >Keepalived is a routing software written in C. The main goal of this project is to provide simple and robust facilities for loadbalancing and high-availability to Linux system and Linux based infrastructures.
+
 #### What VRRP is
 >The Virtual Router Redundancy Protocol (VRRP) is a computer networking protocol that provides for automatic assignment of available Internet Protocol (IP) routers to participating hosts. This increases the availability and reliability of routing paths via automatic default gateway selections on an IP subnetwork.
+Inline-style: 
+
+![alt text](https://github.com/baptiste-bonnaudet/snippets/blob/master/app/images/keepalived_1.gif?raw=true)
+
 
 #### Why not using Pacemaker/Corosync/Heartbeat cluster?
 
@@ -19,10 +24,14 @@ Compared to Pacemaker for setting-up VIP it's much more simpler to use and confi
 #### Architecture
 Function | Hostname | Interface | IP address
 -------- | -------- | -------- | --------
-Keepalived master| node1 |eth0 |10.98.0.173
-Keepalived backup| node2   |eth0|10.98.0.174
+Keepalived master | node1 |eth0 | 10.98.0.173
+Keepalived backup | node2 |eth0 | 10.98.0.174
 
-#### Install on all nodes
+#### Prerequisites
+1. Access to the internet for downloading package
+2. All machines able to ping each other
+
+### Install on all nodes
 ```bash
 # time to get dirty
 
@@ -40,7 +49,7 @@ tar -zxvf keepalived-1.2.23.tar.gz && cd keepalived-1.2.23
 make && make install
 ```
 
-#### Plug configuration files with you system 
+### Plug configuration files with you system 
 We are using CentOS 6, it's compatible with CentOS 7 but it will be better to have a systemd unit file for that.
 
 ```bash
@@ -59,7 +68,7 @@ PATH=/usr/local/sbin/:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin/
 
 ```
 
-#### Configure
+### Configure
 We choose here to configure VRRP using unicast which will work on all kind of networks.
 
 Node1 is set as MASTER, it will start as master and if another master join it will have the priority 150. Node2 will start as BACKUP but will become master if no master is present, if a new master join it will have priority 100.
@@ -67,7 +76,7 @@ Node1 is set as MASTER, it will start as master and if another master join it wi
 Both nodes share the same password *auth_pass s3cr3t*  .
 
 
-#####Node1 /etc/keepalived/keepalived.conf
+####Node1 /etc/keepalived/keepalived.conf
 
 ```bash
 vrrp_instance VI_1 {
@@ -92,7 +101,7 @@ vrrp_instance VI_1 {
 }
 ```
 
-#####Node2 /etc/keepalived/keepalived.conf
+####Node2 /etc/keepalived/keepalived.conf
 
 ```bash
 vrrp_instance VI_1 {
@@ -117,7 +126,7 @@ vrrp_instance VI_1 {
 }
 ```
 
-#### Start keepalived on both nodes
+### Start keepalived on both nodes
 ```bash
 # start the service
 /etc/init.d/keepalived start
