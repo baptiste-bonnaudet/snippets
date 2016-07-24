@@ -54,4 +54,11 @@ MACHINE         IP              METADATA
 a469077e...     10.0.1.83       -
 ```
 
+### Start cluster at boot
+
+Enable the etcd2 and fleet services at boot so locksmithd can reboot the machine automatically without loosing a cluster node :
+```bash
+systemctl enable etcd2.service
+systemctl enable fleet.service
+```
 
