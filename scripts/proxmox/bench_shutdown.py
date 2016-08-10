@@ -2,7 +2,7 @@
 
 #
 # ******************************************************
-#     INFRASTRUCTURE INPUT FOR VERIFICATION TEST BED
+#     			INFRASTRUCTURE INPUT 
 # ******************************************************
 #
 # This script will generate a configuration file for

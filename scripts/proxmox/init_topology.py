@@ -2,7 +2,7 @@
 
 #
 # ******************************************************
-#        INIT TOPOLOGY FOR VERIFICATION TEST BED
+#        			INIT TOPOLOGY
 # ******************************************************
 #
 # This script will configure the verification test bed

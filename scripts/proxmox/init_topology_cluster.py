@@ -3,7 +3,7 @@
 
 #
 # ******************************************************
-#        INIT TOPOLOGY FOR VERIFICATION TEST BED
+#        		INIT TOPOLOGY ON PROXMOX
 # ******************************************************
 #
 # This script will configure the verification test bed
