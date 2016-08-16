@@ -30,6 +30,22 @@ I choose to use 3 partitions :
  - binlogs partition (mounted on the log-bin directory)
  - logs partition, usually your   system's /var/log partition
 
+Here we will be using LVM and /home/database/mysql/ directory :
+```bash
+sdb                            8:16   0  285G  0 disk 
+└─sdb1                         8:17   0  285G  0 part 
+  ├─vgdata-lv_mysql (dm-2)   253:2    0  100G  0 lvm  /home
+  ├─vgdata-lv_home (dm-3)    253:3    0  100G  0 lvm  /home/databases/mysql/data
+  └─vgdata-lv_binlogs (dm-4) 253:4    0   20G  0 lvm  /home/databases/mysql/binlogs
+```
+```bash
+/home/databases/
+└── mysql
+    ├── backups -> /home/exports/mysql/
+    ├── binlogs
+    ├── data
+    └── logs -> /home/logs/mysql/
+```
 ### Configure on node1 and node2
 ####Node 1 /etc/my.cnf
 ```
