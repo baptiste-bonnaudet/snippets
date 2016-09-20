@@ -350,3 +350,66 @@ xtrabackup --prepare --apply-log-only --target-dir=/data/backups/base \
 --incremental-dir=/data/backups/inc1
 #TODO rm datadir + rsync restore
 ```
+
+### Monitoring
+
+#### Check mysql status
+We use mysqladmin to check the service locally, it uses the credentials stored in /etc/my-client.cnf. Edit the script /home/databases/mysql/scripts/check_mysql.sh :
+```bash
+#!/bin/bash
+
+# check mysql using mysqladmin, returns 0 if everything is ok 1 otherwise
+#
+# author: baptiste bonnaudet
+if [ `mysqladmin --login-path=/etc/my-client.cnf ping 2>/dev/null \
+        | /bin/grep "mysqld is alive" \
+        | /usr/bin/wc -l` -eq "1" ]
+then
+        exit 0
+else
+        exit 1
+fi
+```
+#### Check backup status
+/home/databases/mysql/scripts/check_backups.sh
+```bash
+#!/bin/bash
+
+# check last percona xtrabackup (incremental and full)
+#
+# author: baptiste bonnaudet
+
+# get current date timestamp
+date=`date +%s`
+
+# set max delta
+let maxdeltafull=3600*24*7 # 1 week
+let maxdeltainc=3600*24*1 # 1 day
+
+# get dates of last backups
+last_weekly=`ls -t /home/databases/mysql/backups/full-weekly/ | grep backup | head -n1`
+last_weekly_date=`stat -c%Z /home/databases/mysql/backups/full-weekly/$last_weekly`
+last_daily=`ls -t /home/databases/mysql/backups/incremental-daily/ | grep backup | head -n1`
+last_daily_date=`stat -c%Z /home/databases/mysql/backups/incremental-daily/$last_daily`
+
+# get delta
+let deltafull=${date}-${last_weekly_date}
+let deltainc=${date}-${last_daily_date}
+
+# compare with max delta
+if [ $deltafull -gt $maxdeltafull ]
+then
+        exit 1
+fi
+
+# compare with max delta
+if [ $deltainc -gt $maxdeltainc ]
+then
+        exit 1
+fi
+
+# if everything is ok exit 0
+
+exit 0
+
+```
